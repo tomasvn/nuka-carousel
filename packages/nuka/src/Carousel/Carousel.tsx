@@ -59,11 +59,13 @@ export const Carousel = forwardRef<SlideHandle, CarouselProps>(
       swiping,
       title,
       wrapMode,
+      initialPage,
     } = options;
 
     const carouselRef = useRef<HTMLDivElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const previousPageRef = useRef<number>(-1);
+    const arrowsContainerRef = useRef<HTMLDivElement | null>(null);
 
     // -- update page count and scroll offset based on scroll distance
     const { totalPages, scrollOffset } = useMeasurement({
@@ -75,6 +77,7 @@ export const Carousel = forwardRef<SlideHandle, CarouselProps>(
     const { currentPage, goBack, goForward, goToPage } = usePaging({
       totalPages,
       wrapMode,
+      initialPage,
     });
 
     // -- handle touch scroll events
@@ -126,8 +129,13 @@ export const Carousel = forwardRef<SlideHandle, CarouselProps>(
 
     // -- autoplay
     const isHovered = useHover({ element: containerRef, enabled: autoplay });
+    const isArrowHovered = useHover({
+      element: arrowsContainerRef,
+      enabled: autoplay && showArrows === true,
+    });
     const prefersReducedMotion = useReducedMotion({ enabled: autoplay });
-    const autoplayEnabled = autoplay && !(isHovered || prefersReducedMotion);
+    const autoplayEnabled =
+      autoplay && !(isHovered || prefersReducedMotion || isArrowHovered);
     useInterval(goForward, autoplayInterval, autoplayEnabled);
 
     // -- scroll container when page index changes
@@ -139,8 +147,12 @@ export const Carousel = forwardRef<SlideHandle, CarouselProps>(
         containerRef.current.scrollLeft = scrollOffset[currentPage];
         afterSlide && setTimeout(() => afterSlide(endSlideIndex), 0);
         previousPageRef.current = currentPage;
+        if (initialPage === undefined || currentPage === initialPage) {
+          containerRef.current.classList.remove('scroll-auto');
+          containerRef.current.classList.add('scroll-smooth');
+        }
       }
-    }, [currentPage, scrollOffset, beforeSlide, afterSlide]);
+    }, [currentPage, scrollOffset, beforeSlide, afterSlide, initialPage]);
 
     const containerClassName = cls(
       'nuka-container',
@@ -191,7 +203,7 @@ export const Carousel = forwardRef<SlideHandle, CarouselProps>(
                 {children}
               </div>
             </div>
-            {showArrows && arrows}
+            {showArrows && <div ref={arrowsContainerRef}>{arrows}</div>}
           </div>
         </div>
         {showDots && dots}
