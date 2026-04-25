@@ -28,6 +28,7 @@ export function NavButtons() {
         type="button"
         className={prevNavClassName}
         onClick={goBack}
+        disabled={!enablePrevNavButton}
         aria-label="Go to previous slide"
       >
         <svg
@@ -46,6 +47,7 @@ export function NavButtons() {
         type="button"
         className={nextNavClassName}
         onClick={goForward}
+        disabled={!enableNextNavButton}
         aria-label="Go to next slide"
       >
         <svg

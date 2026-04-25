@@ -17,13 +17,13 @@ $ pnpm run build
 
 ## Running the demos
 
-Run docosaurus site on `localhost:3000`
+Run Docusaurus site on `localhost:3000`
 
 ```sh
 $ pnpm run start:website
 ```
 
-To make changes to the Nuka Carousel library and have those changes reflect in the Docosaurus demo app also run
+To make changes to the Nuka Carousel library and have those changes reflect in the Docusaurus demo app also run
 
 ```sh
 $ pnpm run build:watch
